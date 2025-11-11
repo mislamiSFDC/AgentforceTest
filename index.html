@@ -80,54 +80,7 @@
       width: 120px;
       height: 120px;
       margin: 0 auto 30px;
-      background: linear-gradient(135deg, #4a9d8f 0%, #2d7a6b 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      position: relative;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .logo::before,
-    .logo::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .logo::before {
-      width: 140px;
-      height: 140px;
-      animation: ripple 2s ease-out infinite;
-    }
-
-    .logo::after {
-      width: 160px;
-      height: 160px;
-      animation: ripple 2s 0.5s ease-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-    }
-
-    @keyframes ripple {
-      0% {
-        opacity: 1;
-        transform: scale(0.8);
-      }
-      100% {
-        opacity: 0;
-        transform: scale(1.2);
-      }
+      display: block;
     }
 
     .continue-btn {
@@ -184,7 +137,7 @@
 
 <div class="container">
   <h2 class="title">One Assistant</h2>
-  <div class="logo"></div>
+  <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" alt="One Assistant Logo" class="logo" />
   
   <div class="phone-input-wrapper">
     <div class="input-group">
