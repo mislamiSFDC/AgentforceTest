@@ -136,7 +136,7 @@
 <body>
 
 <div class="container">
-  <h2 class="title">One Assistant</h2>
+  <h2 class="title">One Assistant 1</h2>
   <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" alt="One Assistant Logo" class="logo" />
   
   <div class="phone-input-wrapper">
@@ -198,14 +198,28 @@
   document.getElementById('phoneSubmitBtn').addEventListener('click', function() {
     const digits = phoneInput.value.replace(/\D/g, '');
     if (digits.length >= 8) {
-      launchChat();
+      launchChat(digits);
     }
   });
 
-  function launchChat() {
+  function launchChat(phoneDigits) {
     if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
       embeddedservice_bootstrap.utilAPI.launchChat()
-        .then(() => console.log('🟢 Chat launched'))
+        .then(() => {
+          console.log('🟢 Chat launched');
+          
+          // Wait 3000ms before sending phone number
+          setTimeout(() => {
+            const phoneNumber = '+64' + phoneDigits;
+            if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
+              embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumber)
+                .then(() => console.log('📱 Phone number sent:', phoneNumber))
+                .catch(err => console.error('❌ Send message error:', err));
+            } else {
+              console.log('⏳ sendTextMessage API not available');
+            }
+          }, 3000);
+        })
         .catch(err => console.error('❌ Chat launch error:', err));
     } else {
       console.log('⏳ Chat API not ready yet');
