@@ -136,7 +136,7 @@
 <body>
 
 <div class="container">
-  <h2 class="title">One Assistant 1</h2>
+  <h2 class="title">One Assistant</h2>
   <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" alt="One Assistant Logo" class="logo" />
   
   <div class="phone-input-wrapper">
@@ -161,6 +161,8 @@
 </div>
 
 <script>
+  // One Assistant - Last updated: November 11, 2025 at 11:32 PM
+  
   // Phone input formatting
   const phoneInput = document.getElementById('phoneInput');
   
@@ -269,10 +271,10 @@
   }
 
   function closeConversation() {
-    if (embeddedservice_bootstrap?.utilAPI?.removeAllComponents) {
-      embeddedservice_bootstrap.utilAPI.removeAllComponents()
+    if (embeddedservice_bootstrap?.utilAPI?.hideChatButton) {
+      embeddedservice_bootstrap.utilAPI.hideChatButton()
         .then(() => {
-          console.log('🔴 Conversation closed');
+          console.log('🔴 Chat hidden');
           
           // Reset button text and state
           const submitBtn = document.getElementById('phoneSubmitBtn');
@@ -284,9 +286,9 @@
           phoneInput.value = '';
           phoneInput.focus();
         })
-        .catch(err => console.error('❌ Close conversation error:', err));
+        .catch(err => console.error('❌ Hide chat error:', err));
     } else {
-      console.log('⏳ removeAllComponents API not available');
+      console.log('⏳ hideChatButton API not available');
     }
   }
 </script>
