@@ -161,7 +161,7 @@
 </div>
 
 <script>
-  // One Assistant - Last updated: November 11, 2025 at 11:33 PM
+  // One Assistant - Last updated: November 11, 2025 at 11:35 PM
   
   // Phone input formatting
   const phoneInput = document.getElementById('phoneInput');
@@ -204,6 +204,20 @@
   window.addEventListener("onEmbeddedMessagingConversationClosed", () => {
     console.log("🔴 onEmbeddedMessagingConversationClosed fired");
     
+    // Minimize chat
+    if (embeddedservice_bootstrap?.utilAPI?.minimizeChat) {
+      embeddedservice_bootstrap.utilAPI.minimizeChat()
+        .then(() => {
+          console.log('🔴 Chat minimized from closed event');
+          resetForm();
+        })
+        .catch(err => console.error('❌ Minimize chat error:', err));
+    } else {
+      resetForm();
+    }
+  });
+
+  function resetForm() {
     // Reset button text and state
     const submitBtn = document.getElementById('phoneSubmitBtn');
     submitBtn.textContent = 'Continue';
@@ -213,7 +227,13 @@
     // Clear phone input
     phoneInput.value = '';
     phoneInput.focus();
-  });
+    
+    // Reinitialize embedded messaging
+    if (typeof initEmbeddedMessaging === 'function') {
+      initEmbeddedMessaging();
+      console.log('🔄 Embedded messaging reinitialized');
+    }
+  }
 
   // Phone form continue button launches chat
   document.getElementById('phoneSubmitBtn').addEventListener('click', function() {
@@ -274,17 +294,8 @@
     if (embeddedservice_bootstrap?.utilAPI?.minimizeChat) {
       embeddedservice_bootstrap.utilAPI.minimizeChat()
         .then(() => {
-          console.log('🔴 Chat minimized');
-          
-          // Reset button text and state
-          const submitBtn = document.getElementById('phoneSubmitBtn');
-          submitBtn.textContent = 'Continue';
-          submitBtn.disabled = phoneInput.value.replace(/\D/g, '').length < 8;
-          isChatActive = false;
-          
-          // Clear phone input
-          phoneInput.value = '';
-          phoneInput.focus();
+          console.log('🔴 Chat minimized from button click');
+          resetForm();
         })
         .catch(err => console.error('❌ Minimize chat error:', err));
     } else {
