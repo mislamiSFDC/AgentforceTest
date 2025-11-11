@@ -211,16 +211,28 @@
         .then(() => {
           console.log('🟢 Chat launched');
           
-          // Wait 5000ms before sending phone number
-          setTimeout(() => {
+          // Define the event handler so we can remove it later
+          const handleMessageSent = () => {
+            console.log("💬 onEmbeddedMessageSent fired");
+            
             if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
               embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend)
-                .then(() => console.log('📱 Phone number sent:', phoneNumberToSend))
+                .then(() => {
+                  console.log('📱 Phone number sent:', phoneNumberToSend);
+                  
+                  // Remove the event listener after sending
+                  window.removeEventListener("onEmbeddedMessageSent", handleMessageSent);
+                  console.log('🗑️ Event listener removed');
+                })
                 .catch(err => console.error('❌ Send message error:', err));
             } else {
               console.log('⏳ sendTextMessage API not available');
             }
-          }, 5000);
+          };
+          
+          // Listen for message sent event only after chat is launched
+          window.addEventListener("onEmbeddedMessageSent", handleMessageSent);
+          console.log('👂 Listening for onEmbeddedMessageSent');
         })
         .catch(err => console.error('❌ Chat launch error:', err));
     } else {
