@@ -5,8 +5,276 @@
   <title>Agentforce Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=overlays-content" />
   <meta name="robots" content="noindex,nofollow" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #0d5446 0%, #1a7a66 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #ffffff;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 40px;
+      color: #333;
+      background: #f5f5f5;
+      padding: 30px 20px;
+      border-radius: 12px;
+    }
+
+    .phone-input-wrapper {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 60px;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: border-color 0.3s;
+    }
+
+    .input-group:focus-within {
+      border-color: #0d5446;
+    }
+
+    .flag-icon {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+
+    .prefix {
+      font-size: 18px;
+      color: #666;
+      margin-right: 8px;
+      font-weight: 500;
+    }
+
+    #phoneInput {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 18px;
+      color: #333;
+      background: transparent;
+    }
+
+    #phoneInput::placeholder {
+      color: #999;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      background: linear-gradient(135deg, #4a9d8f 0%, #2d7a6b 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .logo::before,
+    .logo::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .logo::before {
+      width: 140px;
+      height: 140px;
+      animation: ripple 2s ease-out infinite;
+    }
+
+    .logo::after {
+      width: 160px;
+      height: 160px;
+      animation: ripple 2s 0.5s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes ripple {
+      0% {
+        opacity: 1;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.2);
+      }
+    }
+
+    .continue-btn {
+      background: white;
+      color: #0d5446;
+      border: none;
+      border-radius: 24px;
+      padding: 14px 48px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      margin-bottom: 30px;
+    }
+
+    .continue-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .continue-btn:active {
+      transform: translateY(0);
+    }
+
+    .continue-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .footer-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .footer-text a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 400;
+      margin-bottom: 40px;
+      letter-spacing: 0.5px;
+    }
+  </style>
 </head>
 <body>
+
+<div class="container">
+  <div id="phoneForm">
+    <h1>Verify mobile phone number & age</h1>
+    <div class="phone-input-wrapper">
+      <div class="input-group">
+        <span class="flag-icon">🇳🇿</span>
+        <span class="prefix">+64</span>
+        <input 
+          type="tel" 
+          id="phoneInput" 
+          placeholder="21 234 5678"
+          maxlength="12"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div id="chatLauncher" class="hidden">
+    <h2 class="title">One Assistant</h2>
+    <div class="logo"></div>
+    <button class="continue-btn" id="continueBtn">Continue</button>
+    <p class="footer-text">
+      We use AI to give you faster, personalised and accurate help whenever you need it. 
+      We always handle your data with care. You can learn more in our 
+      <a href="#">Privacy Policy</a> and <a href="#">AI Terms & Conditions</a>.
+    </p>
+  </div>
+</div>
+
+<script>
+  // Phone input formatting
+  const phoneInput = document.getElementById('phoneInput');
+  
+  phoneInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    
+    // Format: XX XXX XXXX
+    if (value.length > 2 && value.length <= 5) {
+      value = value.slice(0, 2) + ' ' + value.slice(2);
+    } else if (value.length > 5) {
+      value = value.slice(0, 2) + ' ' + value.slice(2, 5) + ' ' + value.slice(5, 9);
+    }
+    
+    e.target.value = value;
+  });
+
+  phoneInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      proceedToChat();
+    }
+  });
+
+  // Show chat launcher when phone number is entered
+  phoneInput.addEventListener('input', function() {
+    const digits = phoneInput.value.replace(/\D/g, '');
+    if (digits.length >= 8) {
+      proceedToChat();
+    }
+  });
+
+  function proceedToChat() {
+    const digits = phoneInput.value.replace(/\D/g, '');
+    if (digits.length >= 8) {
+      document.getElementById('phoneForm').classList.add('hidden');
+      document.getElementById('chatLauncher').classList.remove('hidden');
+    }
+  }
+
+  // Continue button launches chat
+  document.getElementById('continueBtn').addEventListener('click', function() {
+    if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
+      embeddedservice_bootstrap.utilAPI.launchChat()
+        .then(() => console.log('🟢 Chat launched'))
+        .catch(err => console.error('❌ Chat launch error:', err));
+    } else {
+      console.log('⏳ Chat API not ready yet');
+    }
+  });
+</script>
 
 <script>
   // Init called when bootstrap loads
@@ -16,6 +284,7 @@
       embeddedservice_bootstrap.settings.language = "en_US";
       embeddedservice_bootstrap.settings.enableUserInputForConversationWithBot = false;
       embeddedservice_bootstrap.settings.disableStreamingResponses = true;
+      embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
       embeddedservice_bootstrap.init(
         "00DOg000001Vluv",
