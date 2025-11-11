@@ -214,6 +214,17 @@
 </script>
 
 <script>
+  // Listen for when messaging is ready
+  window.addEventListener("onEmbeddedMessagingReady", () => {
+    console.log("⚡ onEmbeddedMessagingReady fired");
+    
+    // Hide the chat button since we're using custom form
+    if (embeddedservice_bootstrap?.utilAPI?.hideChatButton) {
+      embeddedservice_bootstrap.utilAPI.hideChatButton();
+      console.log("🔒 Chat button hidden");
+    }
+  });
+
   // Init called when bootstrap loads
   function initEmbeddedMessaging() {
     try {
@@ -221,7 +232,6 @@
       embeddedservice_bootstrap.settings.language = "en_US";
       embeddedservice_bootstrap.settings.enableUserInputForConversationWithBot = false;
       embeddedservice_bootstrap.settings.disableStreamingResponses = true;
-      embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
       embeddedservice_bootstrap.init(
         "00DOg000001Vluv",
@@ -229,7 +239,6 @@
         "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576",
         { scrt2URL: "https://onz--dcaidev.sandbox.my.salesforce-scrt.com" }
       );
-      embeddedservice_bootstrap.utilAPI.hideChatButton();
       console.log("✅ init() called");
     } catch (err) {
       console.error("❌ init error:", err);
