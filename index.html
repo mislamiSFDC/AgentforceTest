@@ -149,7 +149,7 @@
   <div class="phone-input-wrapper">
     <div class="input-group">
       <span class="flag-icon">🇳🇿</span>
-      <span class="prefix">+64</span>
+      <span class="prefix">64</span>
       <input 
         type="tel" 
         id="phoneInput" 
@@ -221,7 +221,7 @@
   });
 
   function launchChat(phoneDigits) {
-    const phoneNumberToSend = '+64' + phoneDigits;
+    const phoneNumberToSend = '64' + phoneDigits;
     
     if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
       embeddedservice_bootstrap.utilAPI.launchChat()
