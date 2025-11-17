@@ -143,7 +143,7 @@
 <body>
 
 <div class="container">
-  <h2 class="title">One Assistant <span class="version">v11:41 PM</span></h2>
+  <h2 class="title">One Assistant <span class="version">v15:23 PM</span></h2>
   <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" alt="One Assistant Logo" class="logo" />
   
   <div class="phone-input-wrapper">
@@ -232,11 +232,8 @@
           const handleMessageSent = () => {
             console.log("💬 onEmbeddedMessageSent fired");
             
-            if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
-              embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend)
-                .then(() => {
-                  console.log('📱 Phone number sent:', phoneNumberToSend);
-                  embeddedservice_configuration.util.setSessionContext([
+            if (embeddedservice_bootstrap?.utilAPI?.setSessionContext) {
+              embeddedservice_bootstrap.utilAPI.setSessionContext(phoneNumberToSend,[
                       {
                           "name": "_AgentContext",
                           "value": {
@@ -247,6 +244,8 @@
                           }
                       }
                   ])
+                .then(() => {
+                  console.log('📱 Phone number sent:', phoneNumberToSend);
                   .then(() => {
                       console.log("Successfully set agent context.");
                   })
