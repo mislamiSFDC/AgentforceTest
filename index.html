@@ -236,7 +236,17 @@
               embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend)
                 .then(() => {
                   console.log('📱 Phone number sent:', phoneNumberToSend);
-                  
+                  embeddedservice_bootstrap.utilAPI.setSessionContext([
+                        {
+                          name: "_AgentContext",
+                          value: {
+                            valueType: "StructuredValue",
+                            value: {
+                              recommendedPlanId: "a",
+                            },
+                          },
+                        },
+                      ]);
                   // Remove the event listener after sending
                   window.removeEventListener("onEmbeddedMessageSent", handleMessageSent);
                   console.log('🗑️ Event listener removed');
