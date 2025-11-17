@@ -143,7 +143,7 @@
 <body>
 
 <div class="container">
-  <h2 class="title">One Assistant <span class="version">v15:26 PM</span></h2>
+  <h2 class="title">One Assistant <span class="version">v15:27 PM</span></h2>
   <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" alt="One Assistant Logo" class="logo" />
   
   <div class="phone-input-wrapper">
@@ -246,10 +246,6 @@
                   ])
                 .then(() => {
                   console.log('📱 Phone number sent:', phoneNumberToSend);
-                  .catch((error) => {
-                      console.log("Error thrown while setting agent context." + error);
-                  });
-
                   // Remove the event listener after sending
                   window.removeEventListener("onEmbeddedMessageSent", handleMessageSent);
                   console.log('🗑️ Event listener removed');
