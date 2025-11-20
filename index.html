@@ -236,28 +236,31 @@
           const handleMessageSent = () => {
             console.log("💬 onEmbeddedMessagingConversationParticipantChanged fired");
             
-            if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
-              embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
-                      {
-                          "name": "_AgentContext",
-                          "value": {
-                              "valueType": "StructuredValue",
-                              "value": {
-                                  "currentPage": window.location.href
-                              }
-                          }
-                      }
-                  ])
-                .then(() => {
-                  console.log('📱 Phone number sent:', phoneNumberToSend);
-                  // Remove the event listener after sending
-                  window.removeEventListener("onEmbeddedMessagingConversationParticipantChanged", handleMessageSent);
-                  console.log('🗑️ Event listener removed');
-                })
-                .catch(err => console.error('❌ Send message error:', err));
-            } else {
-              console.log('⏳ sendTextMessage API not available');
-            }
+            // Add 500ms delay before sending message
+            setTimeout(() => {
+              if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
+                embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
+                        {
+                            "name": "_AgentContext",
+                            "value": {
+                                "valueType": "StructuredValue",
+                                "value": {
+                                    "currentPage": window.location.href
+                                }
+                            }
+                        }
+                    ])
+                  .then(() => {
+                    console.log('📱 Phone number sent:', phoneNumberToSend);
+                    // Remove the event listener after sending
+                    window.removeEventListener("onEmbeddedMessagingConversationParticipantChanged", handleMessageSent);
+                    console.log('🗑️ Event listener removed');
+                  })
+                  .catch(err => console.error('❌ Send message error:', err));
+              } else {
+                console.log('⏳ sendTextMessage API not available');
+              }
+            }, 500);
           };
           
           // Listen for message sent event only after chat is launched
