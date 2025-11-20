@@ -236,7 +236,7 @@
           const handleMessageSent = () => {
             console.log("💬 onEmbeddedMessagingConversationParticipantChanged fired");
             
-            // Add 1000ms delay before sending message
+            // Add 2000ms delay before sending message
             setTimeout(() => {
               if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
                 embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
@@ -260,7 +260,7 @@
               } else {
                 console.log('⏳ sendTextMessage API not available');
               }
-            }, 1000);
+            }, 2000);
           };
           
           // Listen for message sent event only after chat is launched
