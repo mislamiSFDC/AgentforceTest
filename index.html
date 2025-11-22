@@ -226,43 +226,60 @@
 
   function launchChat(phoneDigits) {
     const phoneNumberToSend = '64' + phoneDigits;
+    let isFirstMessage = true;
     
     if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
       embeddedservice_bootstrap.utilAPI.launchChat()
         .then(() => {
           console.log('🟢 Chat launched');
           
-          // Define the event handler so we can remove it later
-          const handleMessageSent = () => {
+          // Define the event handler that persists for all messages
+          const handleMessageSent = (e) => {
             console.log("💬 onEmbeddedMessageSent fired");
             
-            if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
-              embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
-                      {
-                          "name": "_AgentContext",
-                          "value": {
-                              "valueType": "StructuredValue",
-                              "value": {
-                                  "currentPage": window.location.href
-                              }
-                          }
-                      }
-                  ])
-                .then(() => {
-                  console.log('📱 Phone number sent:', phoneNumberToSend);
-                  // Remove the event listener after sending
-                  window.removeEventListener("onEmbeddedMessageSent", handleMessageSent);
-                  console.log('🗑️ Event listener removed');
-                })
-                .catch(err => console.error('❌ Send message error:', err));
+            if (isFirstMessage) {
+              // First message: send the phone number
+              if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
+                embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
+                        {
+                            "name": "_AgentContext",
+                            "value": {
+                                "valueType": "StructuredValue",
+                                "value": {
+                                    "currentPage": window.location.href
+                                }
+                            }
+                        }
+                    ])
+                  .then(() => {
+                    console.log('📱 Phone number sent:', phoneNumberToSend);
+                    isFirstMessage = false;
+                  })
+                  .catch(err => console.error('❌ Send message error:', err));
+              } else {
+                console.log('⏳ sendTextMessage API not available');
+              }
             } else {
-              console.log('⏳ sendTextMessage API not available');
+              // Subsequent messages: send postMessage to iframe
+              let cwcIframe = document.getElementById('embeddedMessagingFrame');
+              if (cwcIframe) {
+                cwcIframe.contentWindow.postMessage(
+                  {
+                    "eventName": "onEmbeddedMessageSent",
+                    "data": e.detail
+                  },
+                  "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576"
+                );
+                console.log('📤 postMessage sent to iframe');
+              } else {
+                console.log('⚠️ embeddedMessagingFrame iframe not found');
+              }
             }
           };
           
           // Listen for message sent event only after chat is launched
           window.addEventListener("onEmbeddedMessageSent", handleMessageSent);
-          console.log('👂 Listening for onEmbeddedMessageSent');
+          console.log('👂 Listening for onEmbeddedMessageSent (persistent)');
         })
         .catch(err => console.error('❌ Chat launch error:', err));
     } else {
