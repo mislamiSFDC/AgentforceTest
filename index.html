@@ -211,7 +211,6 @@
   // Listen for conversation closed event and refresh page
   window.addEventListener("onEmbeddedMessagingConversationClosed", () => {
     console.log("🔴 onEmbeddedMessagingConversationClosed fired - refreshing page");
-    location.reload();
   });
 
   // Phone form continue button launches chat (one-time trigger)
@@ -311,7 +310,6 @@
       embeddedservice_bootstrap.settings.enableUserInputForConversationWithBot = false;
       embeddedservice_bootstrap.settings.disableStreamingResponses = true;
       embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
-      embeddedservice_bootstrap.settings.devMode = true;
 
       embeddedservice_bootstrap.init(
         "00DOg000001Vluv",
