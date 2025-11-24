@@ -215,7 +215,7 @@
   });
 
   // Listen for custom reload event (for manual triggering)
-  window.addEventListener("reloadPage", (e) => {
+  window.addEventListener("message", (e) => {
     console.log("🔄 reloadPage event received", e.detail);
     window.location.reload();
   });
