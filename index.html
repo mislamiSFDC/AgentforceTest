@@ -216,8 +216,10 @@
 
   // Listen for custom reload event (for manual triggering)
   window.addEventListener("message", (e) => {
-    console.log("🔄 reloadPage event received", e.detail);
-    window.location.reload();
+    if (event.data && event.data.eventName === "reloadPage") {
+      console.log("🔄 reloadPage event received", e.detail);
+      window.location.reload();
+    }
   });
 
   // Phone form continue button launches chat (one-time trigger)
