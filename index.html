@@ -211,13 +211,13 @@
   // Listen for conversation closed event and refresh page
   window.addEventListener("onEmbeddedMessagingConversationClosed", () => {
     console.log("🔴 onEmbeddedMessagingConversationClosed fired - refreshing page");
-    //window.location.reload();
+    window.location.reload();
   });
 
   // Listen for custom reload event (for manual triggering)
   window.addEventListener("message", (e) => {
     if (event.data && event.data.eventName === "reloadPage") {
-      console.log("🔄 reloadPage event received", e.detail);
+      console.log("🔄 reloadPage event received");
       window.location.reload();
     }
   });
@@ -319,7 +319,6 @@
       embeddedservice_bootstrap.settings.enableUserInputForConversationWithBot = false;
       embeddedservice_bootstrap.settings.disableStreamingResponses = true;
       embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
-      embeddedservice_bootstrap.settings.devMode = true;
 
       embeddedservice_bootstrap.init(
         "00DOg000001Vluv",
