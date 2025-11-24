@@ -317,6 +317,20 @@
         "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576",
         { scrt2URL: "https://onz--dcaidev.sandbox.my.salesforce-scrt.com" }
       );
+      let cwcIframe = document.getElementById('embeddedMessagingFrame');
+      if (cwcIframe) {
+        cwcIframe.contentWindow.postMessage(
+          {
+            "eventName": "orgId",
+            "data": embeddedservice_bootstrap.settings.orgId
+          },
+          "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576"
+        );
+        console.log('📤 postMessage orgId sent to iframe');
+      } else {
+        console.log('⚠️ embeddedMessagingFrame iframe not found');
+      }
+    }
       console.log("✅ init() called");
     } catch (err) {
       console.error("❌ init error:", err);
