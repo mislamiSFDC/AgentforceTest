@@ -246,24 +246,26 @@
             console.log("💬 onEmbeddedMessageSent fired");
             
             if (isFirstMessage) {
-              // First message: send the phone number
+              // First message: send the phone number with 1 second delay
               if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
-                embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
-                        {
-                            "name": "_AgentContext",
-                            "value": {
-                                "valueType": "StructuredValue",
-                                "value": {
-                                    "currentPage": window.location.href
-                                }
-                            }
-                        }
-                    ])
-                  .then(() => {
-                    console.log('📱 Phone number sent:', phoneNumberToSend);
-                    isFirstMessage = false;
-                  })
-                  .catch(err => console.error('❌ Send message error:', err));
+                setTimeout(() => {
+                  embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
+                          {
+                              "name": "_AgentContext",
+                              "value": {
+                                  "valueType": "StructuredValue",
+                                  "value": {
+                                      "currentPage": window.location.href
+                                  }
+                              }
+                          }
+                      ])
+                    .then(() => {
+                      console.log('📱 Phone number sent:', phoneNumberToSend);
+                      isFirstMessage = false;
+                    })
+                    .catch(err => console.error('❌ Send message error:', err));
+                }, 1000);
               } else {
                 console.log('⏳ sendTextMessage API not available');
               }
