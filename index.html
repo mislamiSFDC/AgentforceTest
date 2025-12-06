@@ -24,6 +24,25 @@
       color: #ffffff;
     }
 
+    /* --- NEW MODAL STYLES --- */
+    /* This container will hold the Inline Chat */
+    #agentforce-modal-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #ffffff; /* Background for the chat area */
+      z-index: 9999; /* Ensure it sits on top of everything */
+      display: none; /* Hidden by default */
+    }
+    
+    /* Class to show the modal when triggered */
+    #agentforce-modal-container.is-visible {
+      display: block;
+    }
+    /* ------------------------ */
+
     .container {
       width: 100%;
       max-width: 500px;
@@ -141,16 +160,19 @@
 
     /* Fix Keyboard resize window for Android */
     .embeddedMessagingFrame {
-		min-height: 480px !important;
-	}
+        min-height: 480px !important;
+        height: 100% !important; /* Ensure iframe takes full height of modal */
+    }
   </style>
 </head>
 <body>
 
+<div id="agentforce-modal-container"></div>
+
 <div class="container">
   <h2 class="title">One Assistant <span class="version">v11:02 PM</span></h2>
   <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" alt="One Assistant Logo" class="logo" />
-  
+   
   <div class="phone-input-wrapper">
     <div class="input-group">
       <span class="flag-icon">🇳🇿</span>
@@ -164,7 +186,7 @@
     </div>
   </div>
   <button class="continue-btn" id="phoneSubmitBtn" disabled>Authenticate</button>
-  
+   
   <p class="footer-text">
     We use AI to give you faster, personalised and accurate help whenever you need it. 
     We always handle your data with care. You can learn more in our 
@@ -173,9 +195,8 @@
 </div>
 
 <script>
-
       // Fix Viewport Meta on Android
-  	  document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', () => {
       // 1. Find the viewport meta tag in the document's <head>
     const metaViewport = document.querySelector('meta[name="viewport"]');
 
@@ -211,10 +232,10 @@
     observer.observe(metaViewport, { attributes: true });
 
   });
-  
+   
   // Phone input formatting
   const phoneInput = document.getElementById('phoneInput');
-  
+   
   phoneInput.addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
     
@@ -274,6 +295,12 @@
     const phoneNumberToSend = '64' + phoneDigits;
     let isFirstMessage = true;
     
+    // 1. Reveal the Modal Container
+    const modalContainer = document.getElementById('agentforce-modal-container');
+    if(modalContainer) {
+        modalContainer.classList.add('is-visible');
+    }
+
     if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
       embeddedservice_bootstrap.utilAPI.launchChat()
         .then(() => {
@@ -358,7 +385,15 @@
       embeddedservice_bootstrap.settings.language = "en_US";
       embeddedservice_bootstrap.settings.disableStreamingResponses = true;
       embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
-	  embeddedservice_bootstrap.settings.displayMode = 'inline';
+
+      // --- CONFIGURATION FOR INLINE MODAL ---
+      // 1. Set display mode to inline [cite: 38, 54]
+      embeddedservice_bootstrap.settings.displayMode = 'inline';
+      
+      // 2. Specify the target container element [cite: 14, 50]
+      // This ensures the chat fills this specific div instead of the body
+      embeddedservice_bootstrap.settings.targetElement = document.getElementById('agentforce-modal-container');
+      // --------------------------------------
 
       embeddedservice_bootstrap.init(
         "00DOg000001Vluv",
