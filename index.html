@@ -3,15 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <title>Agentforce Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, tan" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="robots" content="noindex,nofollow" />
   <style>
+    /* 1. Global Reset */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    /* 2. Main Page Styling (Your background) */
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: linear-gradient(rgb(7, 120, 86) 0%, rgb(8, 51, 70) 50%, rgb(5, 25, 22) 100%);
@@ -24,24 +26,35 @@
       color: #ffffff;
     }
 
-    /* --- NEW MODAL STYLES --- */
-    /* This container will hold the Inline Chat */
-    #agentforce-modal-container {
+    /* --- FULL SCREEN AGENTFORCE MODAL --- */
+    /* This container sits ON TOP of the body, ignoring body padding/flex */
+    #agentforce-fullscreen-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #ffffff; /* Background for the chat area */
-      z-index: 9999; /* Ensure it sits on top of everything */
+      z-index: 2147483647; /* Max z-index to ensure it covers everything */
+      background-color: #fff; 
       display: none; /* Hidden by default */
+      overflow: hidden; 
     }
-    
-    /* Class to show the modal when triggered */
-    #agentforce-modal-container.is-visible {
+
+    /* Class to reveal the modal */
+    #agentforce-fullscreen-container.is-visible {
       display: block;
     }
-    /* ------------------------ */
+
+    /* Force the Salesforce iframe to fill the container completely */
+    #agentforce-fullscreen-container iframe {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+    /* ------------------------------------ */
 
     .container {
       width: 100%;
@@ -157,17 +170,11 @@
       font-weight: 300;
       margin-left: 10px;
     }
-
-    /* Fix Keyboard resize window for Android */
-    .embeddedMessagingFrame {
-        min-height: 480px !important;
-        height: 100% !important; /* Ensure iframe takes full height of modal */
-    }
   </style>
 </head>
 <body>
 
-<div id="agentforce-modal-container"></div>
+<div id="agentforce-fullscreen-container"></div>
 
 <div class="container">
   <h2 class="title">One Assistant <span class="version">v11:02 PM</span></h2>
@@ -195,57 +202,36 @@
 </div>
 
 <script>
-      // Fix Viewport Meta on Android
-      document.addEventListener('DOMContentLoaded', () => {
-      // 1. Find the viewport meta tag in the document's <head>
+    // --- 1. Viewport Fix (Keep existing logic) ---
+    document.addEventListener('DOMContentLoaded', () => {
     const metaViewport = document.querySelector('meta[name="viewport"]');
-
-    // Safety check: if the tag doesn't exist, do nothing.
-    if (!metaViewport) {
-      console.warn('Bootstrap override: Viewport meta tag not found.');
-      return;
-    }
-
-    // 2. Define the exact value the Salesforce script sets...
-    const undesiredContent = 'width=device-width, initial-scale=1, minimum-scale=1, interactive-widget=resizes-content';
+    if (!metaViewport) return;
     
-    // ...and the value you want to enforce instead.
+    const undesiredContent = 'width=device-width, initial-scale=1, minimum-scale=1, interactive-widget=resizes-content';
     const desiredContent = 'width=device-width, initial-scale=1, minimum-scale-1, interactive-widget=resizes-visual';
 
-    // 3. Create an observer to watch for changes to the meta tag
     const observer = new MutationObserver((mutationsList) => {
-      // Loop through any changes that were detected
       for (const mutation of mutationsList) {
-        // We only care about changes to the 'content' attribute
         if (mutation.type === 'attributes' && mutation.attributeName === 'content') {
-          
-          // 4. Check if the new value is the one we want to replace
           if (metaViewport.getAttribute('content') === undesiredContent) {
-            
-            // 5. If it is, immediately set it to your desired value
             metaViewport.setAttribute('content', desiredContent);
           }
         }
       }
     });
-  // 6. Tell the observer to start watching the meta tag for attribute changes
     observer.observe(metaViewport, { attributes: true });
-
   });
    
-  // Phone input formatting
+  // --- 2. Phone Formatting & UI Logic ---
   const phoneInput = document.getElementById('phoneInput');
    
   phoneInput.addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
-    
-    // Format: XX XXX XXXX
     if (value.length > 2 && value.length <= 5) {
       value = value.slice(0, 2) + ' ' + value.slice(2);
     } else if (value.length > 5) {
       value = value.slice(0, 2) + ' ' + value.slice(2, 5) + ' ' + value.slice(5, 9);
     }
-    
     e.target.value = value;
   });
 
@@ -260,20 +246,17 @@
     }
   });
 
-  // Enable/disable continue button based on phone number validity
   phoneInput.addEventListener('input', function() {
     const digits = phoneInput.value.replace(/\D/g, '');
     const submitBtn = document.getElementById('phoneSubmitBtn');
     submitBtn.disabled = digits.length < 8;
   });
 
-  // Listen for conversation closed event and refresh page
   window.addEventListener("onEmbeddedMessagingConversationClosed", () => {
-    console.log("🔴 onEmbeddedMessagingConversationClosed fired - refreshing page");
+    console.log("🔴 onEmbeddedMessagingConversationClosed - refreshing");
     window.location.reload();
   });
 
-  // Listen for custom reload event (for manual triggering)
   window.addEventListener("message", (e) => {
     if (event.data && event.data.eventName === "reloadPage") {
       console.log("🔄 reloadPage event received");
@@ -281,37 +264,32 @@
     }
   });
 
-  // Phone form continue button launches chat (one-time trigger)
   document.getElementById('phoneSubmitBtn').addEventListener('click', function() {
     const digits = phoneInput.value.replace(/\D/g, '');
     if (digits.length >= 8) {
       launchChat(digits);
-      // Disable button after click to prevent multiple triggers
       this.disabled = true;
     }
   });
 
+  // --- 3. Launch Chat & Reveal Modal ---
   function launchChat(phoneDigits) {
     const phoneNumberToSend = '64' + phoneDigits;
     let isFirstMessage = true;
     
-    // 1. Reveal the Modal Container
-    const modalContainer = document.getElementById('agentforce-modal-container');
-    if(modalContainer) {
-        modalContainer.classList.add('is-visible');
-    }
+    // REVEAL THE FULLSCREEN CONTAINER
+    const fullscreenContainer = document.getElementById('agentforce-fullscreen-container');
+    fullscreenContainer.classList.add('is-visible');
 
     if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
       embeddedservice_bootstrap.utilAPI.launchChat()
         .then(() => {
           console.log('🟢 Chat launched');
           
-          // Define the event handler that persists for all messages
           const handleMessageSent = (e) => {
             console.log("💬 onEmbeddedMessageSent fired");
             
             if (isFirstMessage) {
-              // First message: send the phone number with 1 second delay
               if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
                 setTimeout(() => {
                   embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
@@ -331,11 +309,8 @@
                     })
                     .catch(err => console.error('❌ Send message error:', err));
                 }, 1500);
-              } else {
-                console.log('⏳ sendTextMessage API not available');
               }
             } else {
-              // Subsequent messages: send postMessage to iframe
               let cwcIframe = document.getElementById('embeddedMessagingFrame');
               if (cwcIframe) {
                 cwcIframe.contentWindow.postMessage(
@@ -345,40 +320,28 @@
                   },
                   "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576"
                 );
-                console.log('📤 postMessage sent to iframe');
-              } else {
-                console.log('⚠️ embeddedMessagingFrame iframe not found');
               }
             }
           };
-          
-          // Listen for message sent event only after chat is launched
           window.addEventListener("onEmbeddedMessageSent", handleMessageSent);
-          console.log('👂 Listening for onEmbeddedMessageSent (persistent)');
         })
         .catch(err => console.error('❌ Chat launch error:', err));
-    } else {
-      console.log('⏳ Chat API not ready yet');
     }
   }
 </script>
 
 <script>
-  // Define the messaging ready handler so we can remove/add it
+  // --- 4. Messaging Ready Handler ---
   const handleMessagingReady = () => {
     console.log("⚡ onEmbeddedMessagingReady fired");
-    
-    // Hide the chat button since we're using custom form
     if (embeddedservice_bootstrap?.utilAPI?.hideChatButton) {
       embeddedservice_bootstrap.utilAPI.hideChatButton();
-      console.log("🔒 Chat button hidden");
     }
   };
 
-  // Listen for when messaging is ready
   window.addEventListener("onEmbeddedMessagingReady", handleMessagingReady);
 
-  // Init called when bootstrap loads
+  // --- 5. Initialize Bootstrap with INLINE Settings ---
   function initEmbeddedMessaging() {
     try {
       console.log("→ initEmbeddedMessaging()");
@@ -386,14 +349,15 @@
       embeddedservice_bootstrap.settings.disableStreamingResponses = true;
       embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
-      // --- CONFIGURATION FOR INLINE MODAL ---
-      // 1. Set display mode to inline [cite: 38, 54]
+      // ******************************************************
+      // CRITICAL FOR FULL SCREEN MODAL
+      // ******************************************************
+      // 1. Set display mode to inline [cite: 8, 40]
       embeddedservice_bootstrap.settings.displayMode = 'inline';
       
-      // 2. Specify the target container element [cite: 14, 50]
-      // This ensures the chat fills this specific div instead of the body
-      embeddedservice_bootstrap.settings.targetElement = document.getElementById('agentforce-modal-container');
-      // --------------------------------------
+      // 2. Set target element to our fixed full-screen div [cite: 14, 50]
+      embeddedservice_bootstrap.settings.targetElement = document.getElementById('agentforce-fullscreen-container');
+      // ******************************************************
 
       embeddedservice_bootstrap.init(
         "00DOg000001Vluv",
