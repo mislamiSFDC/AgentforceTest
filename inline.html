@@ -1,304 +1,337 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Agentforce Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="robots" content="noindex,nofollow" />
-  <style>
-    /* 1. Reset standard browser margins */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="utf-8" />
+    <title>Agentforce Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content, viewport-fit=auto" />
+    <meta name="robots" content="noindex,nofollow" />
 
-    /* 2. Main Background (remains visible behind modal until covered) */
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(rgb(7, 120, 86) 0%, rgb(8, 51, 70) 50%, rgb(5, 25, 22) 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      color: #ffffff;
-    }
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* --- THE MODAL CONTAINER --- */
-    /* This div acts as the "Screen" for the chat. 
-       It is fixed to the viewport and covers the whole page. */
-    #agentforce-modal-container {
-      position: fixed;       /* Stay in place even if page scrolls */
-      top: 0;
-      left: 0;
-      width: 100vw;          /* Full Viewport Width */
-      height: 100vh;         /* Full Viewport Height */
-      background-color: #fff; 
-      z-index: 99999;        /* Ensure it is IN FRONT of everything else */
-      display: none;         /* HIDDEN initially */
-      overflow: hidden;      /* No scrollbars on the container itself */
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(rgb(7, 120, 86) 0%, rgb(8, 51, 70) 50%, rgb(5, 25, 22) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #ffffff;
+        }
 
-    /* Class used to show the modal via JavaScript */
-    #agentforce-modal-container.is-active {
-      display: block;
-    }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
 
-    /* Override Salesforce Iframe styles to ensure 100% fit */
-    #agentforce-modal-container iframe {
-        width: 100% !important;
-        height: 100% !important;
-        border: 0 !important;
-        position: absolute !important;
-        top: 0;
-        left: 0;
-    }
-    /* --------------------------- */
+        .phone-input-wrapper {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-    /* Existing Form Styles */
-    .container {
-      width: 100%;
-      max-width: 500px;
-      text-align: center;
-    }
-    .phone-input-wrapper {
-      background: #f5f5f5;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .input-group {
-      display: flex;
-      align-items: center;
-      background: white;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      padding: 12px 16px;
-      transition: border-color 0.3s;
-    }
-    .input-group:focus-within {
-      border-color: #0d5446;
-    }
-    .flag-icon {
-      font-size: 24px;
-      margin-right: 8px;
-    }
-    .prefix {
-      font-size: 18px;
-      color: #666;
-      margin-right: 8px;
-      font-weight: 500;
-    }
-    #phoneInput {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 18px;
-      color: #333;
-      background: transparent;
-    }
-    .logo {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 30px;
-      display: block;
-    }
-    .continue-btn {
-      background: white;
-      color: #0d5446;
-      border: none;
-      border-radius: 24px;
-      padding: 14px 48px;
-      font-size: 18px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      margin-bottom: 30px;
-    }
-    .continue-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-    }
-    .continue-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-    .footer-text {
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .footer-text a {
-      color: white;
-      text-decoration: underline;
-    }
-    .title {
-      font-size: 32px;
-      font-weight: 400;
-      margin-bottom: 30px;
-      letter-spacing: 0.5px;
-    }
-    .version {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 300;
-      margin-left: 10px;
-    }
-  </style>
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: #0d5446;
+        }
+
+        .flag-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .prefix {
+            font-size: 18px;
+            color: #666;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+
+        #phoneInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 18px;
+            color: #333;
+            background: transparent;
+        }
+
+        #phoneInput::placeholder {
+            color: #999;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            display: block;
+        }
+
+        .continue-btn {
+            background: white;
+            color: #0d5446;
+            border: none;
+            border-radius: 24px;
+            padding: 14px 48px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .continue-btn:active {
+            transform: translateY(0);
+        }
+
+        .continue-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-text a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        .version {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            margin-left: 10px;
+        }
+
+        /* Fix Keyboard resize window for Android */
+        .embeddedMessagingFrame {
+            min-height: 480px !important;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="container">
+        <h2 class="title">One Assistant <span class="version">v11:02 PM</span></h2>
+        
+        <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" 
+             alt="One Assistant Logo" 
+             class="logo" />
 
-<div id="agentforce-modal-container"></div>
+        <div class="phone-input-wrapper">
+            <div class="input-group">
+                <span class="flag-icon">🇳🇿</span>
+                <span class="prefix">64</span>
+                <input type="tel" id="phoneInput" placeholder="21 234 5678" maxlength="12" />
+            </div>
+        </div>
 
-<div class="container">
-  <h2 class="title">One Assistant <span class="version">v11:02 PM</span></h2>
-  <img src="https://calvinnr7.github.io/agentforce-test/ONZ_Header_Icon.png" alt="One Assistant Logo" class="logo" />
-   
-  <div class="phone-input-wrapper">
-    <div class="input-group">
-      <span class="flag-icon">🇳🇿</span>
-      <span class="prefix">64</span>
-      <input 
-        type="tel" 
-        id="phoneInput" 
-        placeholder="21 234 5678"
-        maxlength="12"
-      />
+        <button class="continue-btn" id="phoneSubmitBtn" disabled>Authenticate</button>
+
+        <p class="footer-text">
+            We use AI to give you faster, personalised and accurate help whenever you need it.
+            We always handle your data with care. You can learn more in our
+            <a href="#">Privacy Policy</a> and <a href="#">AI Terms & Conditions</a>.
+        </p>
     </div>
-  </div>
-  <button class="continue-btn" id="phoneSubmitBtn" disabled>Authenticate</button>
-   
-  <p class="footer-text">
-    We use AI to give you faster, personalised and accurate help whenever you need it. 
-    We always handle your data with care. You can learn more in our 
-    <a href="#">Privacy Policy</a> and <a href="#">AI Terms & Conditions</a>.
-  </p>
-</div>
 
-<script>
-  // --- Phone Logic ---
-  const phoneInput = document.getElementById('phoneInput');
-  
-  phoneInput.addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length > 2 && value.length <= 5) {
-      value = value.slice(0, 2) + ' ' + value.slice(2);
-    } else if (value.length > 5) {
-      value = value.slice(0, 2) + ' ' + value.slice(2, 5) + ' ' + value.slice(5, 9);
-    }
-    e.target.value = value;
-    const submitBtn = document.getElementById('phoneSubmitBtn');
-    submitBtn.disabled = value.replace(/\D/g, '').length < 8;
-  });
+    <script>
+        // Phone input formatting
+        const phoneInput = document.getElementById('phoneInput');
 
-  phoneInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const submitBtn = document.getElementById('phoneSubmitBtn');
-      if (!submitBtn.disabled) {
-        const digits = phoneInput.value.replace(/\D/g, '');
-        launchChat(digits);
-      }
-    }
-  });
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
 
-  // Button Click Listener
-  document.getElementById('phoneSubmitBtn').addEventListener('click', function() {
-    const digits = phoneInput.value.replace(/\D/g, '');
-    if (digits.length >= 8) {
-      launchChat(digits);
-      this.disabled = true;
-    }
-  });
-
-  // Reload page if chat ends
-  window.addEventListener("onEmbeddedMessagingConversationClosed", () => {
-    console.log("🔴 Conversation closed - refreshing");
-    window.location.reload();
-  });
-
-  // --- LAUNCH CHAT FUNCTION ---
-  function launchChat(phoneDigits) {
-    const phoneNumberToSend = '64' + phoneDigits;
-    
-    // 1. REVEAL THE MODAL (Show the white screen overlay)
-    const modal = document.getElementById('agentforce-modal-container');
-    modal.classList.add('is-active');
-
-    // 2. Launch the Salesforce Chat API
-    if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
-      embeddedservice_bootstrap.utilAPI.launchChat()
-        .then(() => {
-          console.log('🟢 Chat launched successfully');
-          
-          // 3. Setup Message Handling (Sends Phone Number)
-          let isFirstMessage = true;
-          const handleMessageSent = (e) => {
-            if (isFirstMessage) {
-               if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
-                setTimeout(() => {
-                  embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend,[
-                          {
-                              "name": "_AgentContext",
-                              "value": {
-                                  "valueType": "StructuredValue",
-                                  "value": { "currentPage": window.location.href }
-                              }
-                          }
-                      ]).then(() => { isFirstMessage = false; });
-                }, 1500);
-               }
-            } else {
-              // Pass subsequent messages to iframe if needed
-              let cwcIframe = document.getElementById('embeddedMessagingFrame');
-              if (cwcIframe) {
-                cwcIframe.contentWindow.postMessage(
-                  { "eventName": "onEmbeddedMessageSent", "data": e.detail },
-                  "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576"
-                );
-              }
+            // Format: XX XXX XXXX
+            if (value.length > 2 && value.length <= 5) {
+                value = value.slice(0, 2) + ' ' + value.slice(2);
+            } else if (value.length > 5) {
+                value = value.slice(0, 2) + ' ' + value.slice(2, 5) + ' ' + value.slice(5, 9);
             }
-          };
-          window.addEventListener("onEmbeddedMessageSent", handleMessageSent);
-        })
-        .catch(err => console.error('❌ Chat launch error:', err));
-    }
-  }
 
-  // --- INIT AGENTFORCE ---
-  function initEmbeddedMessaging() {
-    try {
-      embeddedservice_bootstrap.settings.language = "en_US";
-      embeddedservice_bootstrap.settings.disableStreamingResponses = true;
-      embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+            e.target.value = value;
+        });
 
-      // *** INLINE CONFIGURATION ***
-      // 1. Set mode to Inline
-      embeddedservice_bootstrap.settings.displayMode = 'inline';
-      
-      // 2. Target the HIDDEN modal container
-      // The chat will load inside here, but remain invisible until we add 'is-active' class
-      embeddedservice_bootstrap.settings.targetElement = document.getElementById('agentforce-modal-container');
+        phoneInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const submitBtn = document.getElementById('phoneSubmitBtn');
+                if (!submitBtn.disabled) {
+                    const digits = phoneInput.value.replace(/\D/g, '');
+                    launchChat(digits);
+                }
+            }
+        });
 
-      embeddedservice_bootstrap.init(
-        "00DOg000001Vluv",
-        "MRI_Messaging_UI",
-        "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576",
-        { scrt2URL: "https://onz--dcaidev.sandbox.my.salesforce-scrt.com" }
-      );
-    } catch (err) {
-      console.error("❌ Init failed", err);
-    }
-  }
-</script>
+        // Enable/disable continue button based on phone number validity
+        phoneInput.addEventListener('input', function() {
+            const digits = phoneInput.value.replace(/\D/g, '');
+            const submitBtn = document.getElementById('phoneSubmitBtn');
+            submitBtn.disabled = digits.length < 8;
+        });
 
-<script type='text/javascript' src='https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+        // Listen for conversation closed event and refresh page
+        window.addEventListener("onEmbeddedMessagingConversationClosed", () => {
+            console.log("🔴 onEmbeddedMessagingConversationClosed fired - refreshing page");
+            window.location.reload();
+        });
 
+        // Listen for custom reload event (for manual triggering)
+        window.addEventListener("message", (e) => {
+            if (event.data && event.data.eventName === "reloadPage") {
+                console.log("🔄 reloadPage event received");
+                window.location.reload();
+            }
+        });
+
+        // Phone form continue button launches chat (one-time trigger)
+        document.getElementById('phoneSubmitBtn').addEventListener('click', function() {
+            const digits = phoneInput.value.replace(/\D/g, '');
+            if (digits.length >= 8) {
+                launchChat(digits);
+                // Disable button after click to prevent multiple triggers
+                this.disabled = true;
+            }
+        });
+
+        function launchChat(phoneDigits) {
+            const phoneNumberToSend = '64' + phoneDigits;
+            let isFirstMessage = true;
+
+            if (embeddedservice_bootstrap?.utilAPI?.launchChat) {
+                embeddedservice_bootstrap.utilAPI.launchChat()
+                    .then(() => {
+                        console.log('🟢 Chat launched');
+
+                        // Define the event handler that persists for all messages
+                        const handleMessageSent = (e) => {
+                            console.log("💬 onEmbeddedMessageSent fired");
+
+                            if (isFirstMessage) {
+                                // First message: send the phone number with 1 second delay
+                                if (embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
+                                    setTimeout(() => {
+                                        embeddedservice_bootstrap.utilAPI.sendTextMessage(phoneNumberToSend, [{
+                                                "name": "_AgentContext",
+                                                "value": {
+                                                    "valueType": "StructuredValue",
+                                                    "value": {
+                                                        "currentPage": window.location.href
+                                                    }
+                                                }
+                                            }])
+                                            .then(() => {
+                                                console.log('📱 Phone number sent:', phoneNumberToSend);
+                                                isFirstMessage = false;
+                                            })
+                                            .catch(err => console.error('❌ Send message error:', err));
+                                    }, 1500);
+                                } else {
+                                    console.log('⏳ sendTextMessage API not available');
+                                }
+                            } else {
+                                // Subsequent messages: send postMessage to iframe
+                                let cwcIframe = document.getElementById('embeddedMessagingFrame');
+                                if (cwcIframe) {
+                                    cwcIframe.contentWindow.postMessage({
+                                            "eventName": "onEmbeddedMessageSent",
+                                            "data": e.detail
+                                        },
+                                        "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576"
+                                    );
+                                    console.log('📤 postMessage sent to iframe');
+                                } else {
+                                    console.log('⚠️ embeddedMessagingFrame iframe not found');
+                                }
+                            }
+                        };
+
+                        // Listen for message sent event only after chat is launched
+                        window.addEventListener("onEmbeddedMessageSent", handleMessageSent);
+                        console.log('👂 Listening for onEmbeddedMessageSent (persistent)');
+                    })
+                    .catch(err => console.error('❌ Chat launch error:', err));
+            } else {
+                console.log('⏳ Chat API not ready yet');
+            }
+        }
+    </script>
+
+    <script>
+        // Define the messaging ready handler so we can remove/add it
+        const handleMessagingReady = () => {
+            console.log("⚡ onEmbeddedMessagingReady fired");
+
+            // Hide the chat button since we're using custom form
+            if (embeddedservice_bootstrap?.utilAPI?.hideChatButton) {
+                embeddedservice_bootstrap.utilAPI.hideChatButton();
+                console.log("🔒 Chat button hidden");
+            }
+        };
+
+        // Listen for when messaging is ready
+        window.addEventListener("onEmbeddedMessagingReady", handleMessagingReady);
+
+        // Init called when bootstrap loads
+        function initEmbeddedMessaging() {
+            try {
+                console.log("→ initEmbeddedMessaging()");
+                embeddedservice_bootstrap.settings.language = "en_US";
+                embeddedservice_bootstrap.settings.disableStreamingResponses = true;
+                embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+                embeddedservice_bootstrap.settings.displayMode = 'inline';
+
+                embeddedservice_bootstrap.init(
+                    "00DOg000001Vluv",
+                    "MRI_Messaging_UI",
+                    "https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576", {
+                        scrt2URL: "https://onz--dcaidev.sandbox.my.salesforce-scrt.com"
+                    }
+                );
+                console.log("✅ init() called");
+            } catch (err) {
+                console.error("❌ init error:", err);
+            }
+        }
+    </script>
+
+    <script type='text/javascript' src='https://onz--dcaidev.sandbox.my.site.com/ESWMRIMessagingUI1758773345576/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 </body>
 </html>
