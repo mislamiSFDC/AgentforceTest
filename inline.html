@@ -182,24 +182,6 @@
 </div>
 
 <script>
-  // --- Viewport Fix for Mobile ---
-  document.addEventListener('DOMContentLoaded', () => {
-    const metaViewport = document.querySelector('meta[name="viewport"]');
-    if (!metaViewport) return;
-    const undesiredContent = 'width=device-width, initial-scale=1, minimum-scale=1, interactive-widget=resizes-content';
-    const desiredContent = 'width=device-width, initial-scale=1, minimum-scale-1, interactive-widget=resizes-visual';
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'content') {
-          if (metaViewport.getAttribute('content') === undesiredContent) {
-            metaViewport.setAttribute('content', desiredContent);
-          }
-        }
-      }
-    });
-    observer.observe(metaViewport, { attributes: true });
-  });
-
   // --- Phone Logic ---
   const phoneInput = document.getElementById('phoneInput');
   
