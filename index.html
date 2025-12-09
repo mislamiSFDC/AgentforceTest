@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Agentforce Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, tan" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale-1, interactive-widget=resizes-visual" />
     <meta name="robots" content="noindex,nofollow" />
 
     <style>
@@ -173,44 +173,6 @@
     </div>
 
     <script>
-        // Fix Viewport Meta on Android
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Find the viewport meta tag in the document's <head>
-            const metaViewport = document.querySelector('meta[name="viewport"]');
-
-            // Safety check: if the tag doesn't exist, do nothing.
-            if (!metaViewport) {
-                console.warn('Bootstrap override: Viewport meta tag not found.');
-                return;
-            }
-
-            // 2. Define the exact value the Salesforce script sets...
-            const undesiredContent = 'width=device-width, initial-scale=1, minimum-scale=1, interactive-widget=resizes-content';
-
-            // ...and the value you want to enforce instead.
-            const desiredContent = 'width=device-width, initial-scale=1, minimum-scale-1, interactive-widget=resizes-visual';
-
-            // 3. Create an observer to watch for changes to the meta tag
-            const observer = new MutationObserver((mutationsList) => {
-                // Loop through any changes that were detected
-                for (const mutation of mutationsList) {
-                    // We only care about changes to the 'content' attribute
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'content') {
-                        // 4. Check if the new value is the one we want to replace
-                        if (metaViewport.getAttribute('content') === undesiredContent) {
-                            // 5. If it is, immediately set it to your desired value
-                            metaViewport.setAttribute('content', desiredContent);
-                        }
-                    }
-                }
-            });
-
-            // 6. Tell the observer to start watching the meta tag for attribute changes
-            observer.observe(metaViewport, {
-                attributes: true
-            });
-        });
-
         // Phone input formatting
         const phoneInput = document.getElementById('phoneInput');
 
